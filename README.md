@@ -1,13 +1,14 @@
 # Kikaron Multipass - the web vault
 
-The web vault of **Multipass**, Kikaron's password manager, is a modified version,
-made by Cornae (2026), of the [Bitwarden web vault](https://github.com/bitwarden/clients)
+Kikaron Multipass was developed using Bitwarden® open source software. Its web
+vault is a version of the [Bitwarden® web vault](https://github.com/bitwarden/clients)
 (GPL-3.0) as built for [Vaultwarden](https://github.com/dani-garcia/vaultwarden)
-([bw_web_builds](https://github.com/dani-garcia/bw_web_builds), AGPL-3.0). The
-server is Vaultwarden itself, unmodified.
+([bw_web_builds](https://github.com/dani-garcia/bw_web_builds), AGPL-3.0), modified
+by Cornae (2026). The server is Vaultwarden itself, unmodified.
 
-Not made, endorsed or supported by Bitwarden Inc. "Bitwarden" is a trademark of
-Bitwarden Inc.; Multipass does not use it as its name or logo.
+Not affiliated with or endorsed by Bitwarden, Inc. Bitwarden is a trademark or
+registered trademark of Bitwarden, Inc. in the United States and/or other countries;
+Kikaron Multipass does not use it as its name or logo.
 
 ## Licence
 

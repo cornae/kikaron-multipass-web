@@ -38,12 +38,14 @@ JS_EXACT = [
     ('otpauth://totp/Vaultwarden:', 'otpauth://totp/Multipass:'),
     (' A modified version of the Bitwarden® Web Vault for Vaultwarden '
      '(an unofficial rewrite of the Bitwarden® server).',
-     ' Multipass is a modified version, by Cornae (2026), of the Bitwarden® web '
-     'vault (GPL-3.0) for Vaultwarden (AGPL-3.0), without any warranty. Source: '
+     # the wording Bitwarden's trademark guidelines give for a modified version
+     ' Kikaron Multipass was developed using Bitwarden® open source software: a '
+     'version of the Bitwarden® web vault (GPL-3.0) for Vaultwarden (AGPL-3.0), '
+     'modified by Cornae (2026), without any warranty. Source: '
      'https://github.com/cornae/kikaron-multipass-web'),
     (' Vaultwarden is not associated with the Bitwarden® project nor '
      'Bitwarden Inc. ',
-     ' Multipass is not affiliated with or endorsed by Bitwarden Inc. '),
+     ' Not affiliated with or endorsed by Bitwarden, Inc. '),
 ]
 # Optional ones: matched if present, silently skipped otherwise.
 JS_OPTIONAL = []
