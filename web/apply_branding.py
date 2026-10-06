@@ -263,10 +263,43 @@ def brand_css(dst):
                 ref.write_text(body.replace(sheet.name, renamed.name), encoding='utf-8')
 
 
+RENDERED = None   # a directory of pre-rendered PNGs (set in main): see below
+
+
 def render(svg, out, size, background=None):
+    """SVG -> PNG at `size`. A file of the same name in the pre-rendered directory
+    wins: those pictures are made once (--save-rendered, on a machine with
+    ImageMagick) and committed, so the host that follows upstream (the production
+    box) needs nothing but Python - ImageMagick drags in Ghostscript and fonts,
+    far too much for a server just to draw an icon."""
+    ready = RENDERED / Path(out).name if RENDERED else None
+    if ready and ready.exists():
+        shutil.copyfile(ready, out)
+        return
+    if not shutil.which('convert'):
+        sys.exit('no ImageMagick (convert) and no pre-rendered %s in %s: run once with '
+                 '--save-rendered on a machine that has it' % (Path(out).name, RENDERED))
     cmd = ['convert', '-background', background or 'none', '-density', '600',
            str(svg), '-resize', size, str(out)]
     subprocess.run(cmd, check=True)
+
+
+# what render() makes: saved by --save-rendered, found again by name
+RENDERED_NAMES = ['android-chrome-192x192.png', 'android-chrome-512x512.png',
+                  'apple-touch-icon.png', 'favicon-16x16.png', 'favicon-32x32.png',
+                  'mstile-150x150.png', 'icon-dark.png', 'icon-white.png',
+                  'logo-dark@2x.png', 'logo-white@2x.png', 'favicon.ico']
+
+
+def save_rendered(dst, folder):
+    folder.mkdir(parents=True, exist_ok=True)
+    n = 0
+    for name in RENDERED_NAMES:
+        for found in list((dst / 'images').rglob(name)) + list(dst.glob(name)):
+            shutil.copyfile(found, folder / name)
+            n += 1
+            break
+    print('saved %d pre-rendered pictures in %s' % (n, folder))
 
 
 def wordmark_svg(path, icon_svg, fill):
@@ -302,9 +335,12 @@ def brand_images(dst, icon):
         if (img / png).exists():
             render(img / svg, img / png, '568x118')
     if (dst / 'favicon.ico').exists():
-        subprocess.run(['convert', str(img / 'favicon-32x32.png'),
-                        str(img / 'favicon-16x16.png'), str(dst / 'favicon.ico')],
-                       check=True)
+        if RENDERED and (RENDERED / 'favicon.ico').exists():
+            shutil.copyfile(RENDERED / 'favicon.ico', dst / 'favicon.ico')
+        else:
+            subprocess.run(['convert', str(img / 'favicon-32x32.png'),
+                            str(img / 'favicon-16x16.png'), str(dst / 'favicon.ico')],
+                           check=True)
 
 
 def main():
@@ -313,7 +349,14 @@ def main():
     ap.add_argument('dst')
     ap.add_argument('--icon', default=str(Path(__file__).resolve().parents[1]
                                           / 'brand' / 'icon.svg'))
+    ap.add_argument('--save-rendered', action='store_true',
+                    help='after branding, keep the rendered pictures in brand/rendered/ '
+                         '(needs ImageMagick; commit the result)')
     args = ap.parse_args()
+    global RENDERED
+    folder = Path(args.icon).resolve().parent / 'rendered'
+    if not args.save_rendered and folder.is_dir():
+        RENDERED = folder
     src, dst = Path(args.src), Path(args.dst)
     if not (src / 'index.html').exists():
         sys.exit('%s does not look like a web vault' % src)
@@ -331,6 +374,8 @@ def main():
     left = [p for p in dst.glob('*.html') if 'Vaultwarden Web' in p.read_text(encoding='utf-8')]
     if left:
         sys.exit('unbranded: %s' % left)
+    if args.save_rendered:
+        save_rendered(dst, folder)
     print('branded %d locale strings; vault ready in %s' % (n, dst))
 
 
