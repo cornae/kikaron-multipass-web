@@ -1,0 +1,227 @@
+/* MULTIPASS - the vault in Kikaron's own style.
+ *
+ * Appended to the vault's stylesheet by apply_branding.py. The vault is the
+ * Bitwarden web client (Angular + Tailwind): colours come from CSS variables
+ * ("R G B" triples and hex ramps), so most of the look is a re-skin of those
+ * tokens; the rest are a few shape rules keyed on the client's own attributes
+ * (bitbutton, bitfieldcontainer, bit-base-card) that do not move between
+ * releases. Values are Kikaron's: the warm paper ground, white cards with a
+ * big radius, pill buttons and pill inputs, Inter, the app's indigo (the
+ * Multipass tile, #3A4B94) as the accent, and the house slate for ink.
+ */
+
+/* ---- colour tokens ---------------------------------------------------- */
+:root,
+.theme_light {
+  --color-brand-050: #eef0f9;
+  --color-brand-100: #dde2f3;
+  --color-brand-200: #bcc6e8;
+  --color-brand-300: #94a3d8;
+  --color-brand-400: #6a7fc4;
+  --color-brand-500: #4d63ae;
+  --color-brand-600: #3a4b94;
+  --color-brand-700: #3a4b94;
+  --color-brand-800: #2f3d79;
+  --color-brand-900: #26315f;
+  --color-brand-950: #1a2244;
+  --color-brand-950-rgb: 26, 34, 68;
+
+  --color-primary-100: 221 226 243;
+  --color-primary-600: 58 75 148;
+  --color-primary-700: 47 61 121;
+
+  /* the page is the paper, the cards are white (as everywhere in Kikaron) */
+  --color-background: 255 255 255;
+  --color-background-alt: 245 242 236;
+  --color-text-main: 26 26 26;
+  --color-text-muted: 107 101 96;
+
+  --color-hover-default: rgb(58 75 148 / 0.08);
+
+  /* the pictures above the forms (the safe, the padlock): Kikaron's indigo and
+     paper, with the house orange where the picture has a bright spot */
+  --color-illustration-outline: 26 34 68;
+  --color-illustration-bg-primary: 221 226 243;
+  --color-illustration-bg-secondary: 188 198 232;
+  --color-illustration-bg-tertiary: 255 255 255;
+  --color-illustration-tertiary: 243 112 33;
+  --color-illustration-logo: 58 75 148;
+}
+
+.theme_dark {
+  --color-brand-400: #94a3d8;
+  --color-brand-700: #94a3d8;
+  --color-primary-600: 148 163 216;
+  --color-primary-700: 188 198 232;
+  --color-background: 36 36 38;
+  --color-background-alt: 24 24 26;
+  --color-text-main: 240 238 234;
+  --color-text-muted: 160 155 148;
+}
+
+/* ---- shape: Kikaron is round ------------------------------------------ */
+body {
+  font-family: Inter, system-ui, -apple-system, "Segoe UI", sans-serif;
+}
+
+/* pill buttons, bold, as every Kikaron button */
+[bitbutton],
+a[bitbutton] {
+  border-radius: 9999px !important;
+  font-weight: 700 !important;
+  letter-spacing: 0;
+}
+
+/* pill-ish inputs on a white ground with a hairline instead of a heavy border */
+[bitfieldcontainer] {
+  border-radius: 20px !important;
+  border-color: rgb(107 101 96 / 0.25) !important;
+  background-color: #fff !important;
+}
+.theme_dark [bitfieldcontainer] {
+  background-color: rgb(var(--color-background)) !important;
+}
+[bitfieldcontainer]:focus-within {
+  border-color: rgb(var(--color-primary-600)) !important;
+  box-shadow: 0 0 0 3px rgb(58 75 148 / 0.15);
+}
+
+/* cards: white, large radius, soft shadow */
+bit-base-card,
+bit-card,
+.tw-rounded-xl,
+.tw-rounded-2xl {
+  border-radius: 20px !important;
+}
+bit-base-card {
+  border: 0 !important;
+  box-shadow: 0 2px 14px rgb(0 0 0 / 0.06) !important;
+}
+
+/* the paper behind everything */
+body,
+body.layout_frontend,
+app-root > .tw-bg-background-alt,
+.tw-bg-background-alt {
+  background-color: rgb(var(--color-background-alt)) !important;
+}
+
+/* headings the way Kikaron sets them: medium weight, tight */
+h1[bittypography],
+h2[bittypography] {
+  font-weight: 600;
+  letter-spacing: -0.01em;
+}
+
+/* links in the app colour, underline only on hover */
+a[bitlink],
+a.tw-text-primary-600 {
+  text-decoration: none;
+}
+a[bitlink]:hover,
+a.tw-text-primary-600:hover {
+  text-decoration: underline;
+}
+
+/* inside Kikaron the app already wears the product's name: drop the vault's own
+   wordmark and the long attribution line from the framed pages (the attribution
+   stays on the About screen and on the standalone host). */
+html.mp-framed bit-svg[aria-label$="logo"] {
+  display: none !important;
+}
+html.mp-framed .tw-text-center.tw-text-xs,
+html.mp-framed footer {
+  display: none !important;
+}
+
+/* the faint line drawings in the corners of the sign-in pages are the vault's
+   decoration, not Kikaron's: the paper stays plain */
+[class*="tw-opacity-[.11]"] {
+  display: none !important;
+}
+
+/* sign-up with an e-mail address is closed (nginx); the way in is Kikaron */
+a[href="#/signup"],
+a[href$="/signup"] {
+  display: none !important;
+}
+
+/* ---- the "choose a password" screen, shown as Kikaron's panel ----------------
+   Kikaron frames this screen in a notice-plus-form panel (apps/multipass), so the
+   vault drops everything that makes it a page of the stock product: the
+   illustration and title ("join organisation"), the wordmark, the footer, the
+   card's own shadow and the log-out button - there is nothing to log out of before
+   the vault exists. */
+html.mp-framed.mp-setpw body,
+html.mp-framed.mp-setpw body.layout_frontend,
+html.mp-framed.mp-setpw .tw-bg-background-alt {
+  background: transparent !important;
+}
+html.mp-framed.mp-setpw bit-landing-hero,
+html.mp-framed.mp-setpw a.tw-py-5,
+html.mp-framed.mp-setpw footer,
+html.mp-framed.mp-setpw bit-landing-footer {
+  display: none !important;
+}
+html.mp-framed.mp-setpw bit-landing-card bit-base-card {
+  box-shadow: none !important;
+  background: transparent !important;
+  margin-bottom: 0 !important;
+}
+html.mp-framed.mp-setpw bit-landing-card form button[bitbutton][type="button"]:not([biticonbutton]) {
+  display: none !important;
+}
+html.mp-framed.mp-setpw main {
+  padding-top: 0 !important;
+}
+/* In the panel the card IS the frame's whole content: lifted to the top of the
+   frame, so nothing the stock page lays out around it (its centring, its spacers)
+   pushes the form down, and the frame never scrolls - Kikaron sizes the frame to
+   the card (multipass.js reports its height). */
+html.mp-framed.mp-setpw,
+html.mp-framed.mp-setpw body {
+  overflow: hidden !important;
+}
+html.mp-framed.mp-setpw bit-landing-card {
+  position: fixed !important;
+  inset: 0 0 auto 0 !important;
+  z-index: 10;
+  max-width: none !important;
+  max-height: 100vh;
+  margin: 0 !important;
+  overflow-y: auto;
+}
+html.mp-framed.mp-setpw bit-landing-card bit-base-card {
+  padding: 0 !important;
+}
+
+/* the show-password eye (and every icon button inside a field): the quiet grey of
+   Kikaron's field icons, centred on the field's middle line */
+[bitfieldcontainer] button[biticonbutton] {
+  display: inline-flex !important;
+  align-items: center;
+  justify-content: center;
+  margin-block: 0 !important;
+  color: #8a847d !important;
+}
+[bitfieldcontainer] button[biticonbutton] i.bwi,
+[bitfieldcontainer] button[biticonbutton] bit-icon {
+  display: block;
+  line-height: 1;
+}
+@media (hover: hover) {
+  [bitfieldcontainer] button[biticonbutton]:hover {
+    color: #4a4642 !important;
+  }
+}
+
+/* the panel's button is Kikaron's own (its modal button bar, under the frame) */
+html.mp-framed.mp-setpw.mp-kbutton bit-landing-card form button[type="submit"] {
+  display: none !important;
+}
+
+/* no password hint on the set-password screen: a hint is a clue to the password,
+   stored on the server, and there is no e-mail to send it to */
+html.mp-framed.mp-setpw bit-form-field:has(input[formcontrolname="newPasswordHint"]) {
+  display: none !important;
+}
